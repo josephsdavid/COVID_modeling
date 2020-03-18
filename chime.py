@@ -57,6 +57,27 @@ def chime(S, infect_0, curr_hosp, hosp_rate=0.05, t_double=6,
           contact_rate=0, hosp_share = 1., hos_los=7, icu_los=9,
           vent_los=10, R = 0, t_rec = 14, beta_decay = None, n_days = 60,
           vent_rate=0.01, icu_rate=0.02):
+    '''
+    chime: SIR model for ventilators, ICU , and hospitilaizations.
+    -----------------------------
+    parameters:
+        S: population size
+        infect_0: number of confirmed infections
+        curr_hosp: number of currently hospitalized patients
+        hosp_rate: hospitalization_rate = 0.05
+        t_double: time to double without distancing = 6
+        contact_rate: reduction in contact due to distancing = 0
+        hosp_share: proportion of the population represented by hospitalization data = 1
+        hos_los: how long people stay in the hospital = 7
+        icu_los : how long people stay in the ice = 9
+        vent_los : how long people stay with ventilators = 10
+        R : number recovered present data = 0
+        t_rec : number of days to recover = 14
+        betay_decay : beta decay = None
+        n_days: number of days ahead to look = 60
+        vent_rate: rate of people who need ventilators = 0.01
+        icu_rate: rate of people who need icu = 0.02
+    '''
 
     pars = generate_pars(S, infect_0, curr_hosp, hosp_rate, t_double,
                   contact_rate, hosp_share, hos_los, icu_los,
@@ -67,18 +88,7 @@ def chime(S, infect_0, curr_hosp, hosp_rate=0.05, t_double=6,
 
     hosp, vent, icu = (pars[x]*i*pars['hosp_share'] for x in ['hosp_rate', 'vent_rate','icu_rate'])
     days = np.arange(0, n_days+1)
-    data = dict(zip(['day','hosp','icu','vent'], [days, hosp, vent, icu]))
+    data = dict(zip(['day','hosp','icu','vent'], [days, hosp, icu, vent]))
     return data
 
 
-import matplotlib.pyplot as plt
-
-tx = chime(28995881, 108, 20, n_days = 60)
-
-import matplotlib.pyplot as plt
-
-ax = plt.subplot()
-for k in list(tx.keys())[1:]:
-    ax.plot(tx[k], label = k)
-    ax.legend()
-plt.show()
