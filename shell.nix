@@ -1,6 +1,6 @@
 let
-  pkgs = import <nixpkgs> {};
-  stable = import <stable>{};
+  pkgs = import <stable> {};
+  #stable = import <stable>{};
 
   cord19 =  pkgs.callPackage ./cord.nix {
     buildPythonPackage = pkgs.python37.pkgs.buildPythonPackage;
@@ -24,7 +24,9 @@ in
       pkgs.python37Packages.seaborn
       pkgs.python37Packages.jupyter
       pkgs.python37Packages.pandas
-      stable.python37Packages.imbalanced-learn
+      pkgs.python37Packages.imbalanced-learn
+      pkgs.qt5.qtbase
+
     ];
     shellHook = ''
       export SOURCE_DATE_EPOCH=$(date +%s) 
