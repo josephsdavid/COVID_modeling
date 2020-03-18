@@ -25,7 +25,7 @@ def chime_sir(S, I, R, beta, gamma, n_days, beta_decay = None):
 
 
 def generate_pars(S, infect_0, curr_hosp, hosp_rate=0.05, t_double=6,
-                  contact_rate=0, hosp_share = .15, hos_los=7, icu_los=9,
+                  contact_rate=0, hosp_share = 1., hos_los=7, icu_los=9,
                   vent_los=10, R = 0, t_rec = 14):
     out = {}
     out['S'] = S
@@ -37,3 +37,12 @@ def generate_pars(S, infect_0, curr_hosp, hosp_rate=0.05, t_double=6,
     infect_total = curr_hosp / market_share / market_rate
     out['I'] = infect_total
     out['detect_prob'] = infect_0 / infect_total
+    out['R'] = R
+    out['growth_intrinsic'] = 2**(1/t_double)  - 1
+    out['t_rec'] = t_rec
+    out['gamma'] = 1 / t_rec
+    out['contact_rate'] = contact_rate
+    out['beta'] = ((out['growth_intrinsic'] + out['gamma']) / S) * (1-contact_rate)
+    out['r_t'] = out['beta'] / out['gamma'] * S
+    out['r_naught'] = out['r_t'] / (1-contact_rate)
+    out['t_double']
