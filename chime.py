@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 def sir_step (S, I , R, beta, gamma, N):
     Sn = (-beta *S*I) + S
@@ -87,8 +88,37 @@ def chime(S, infect_0, curr_hosp, hosp_rate=0.05, t_double=6,
                         pars['beta'], pars['gamma'], n_days, beta_decay)
 
     hosp, vent, icu = (pars[x]*i*pars['hosp_share'] for x in ['hosp_rate', 'vent_rate','icu_rate'])
+    # something is wrong in general, but will be up and running by bedtime
     days = np.arange(0, n_days+1)
     data = dict(zip(['day','hosp','icu','vent'], [days, hosp, icu, vent]))
-    return data
+    proj = pd.DataFrame.from_dict(data)
+    proj_admits = proj.iloc[:-1,:] - proj.shift(1)
+    proj_admits[proj_admits <0 ] = 0
+    plot_days = n_days - 10
+    proj_admits["day"] = range(proj_admits.shape[0])
+    los_dict = {k[:-4]: pars[k] for k in ['hosp_los', 'icu_los', 'vent_los']}
+    census_dict = {}
+    for k, los in los_dict.items():
+        census = (
+            proj_admits.cumsum().iloc[:-los,:] - proj_admits.cumsum().shift(los).fillna(0)
+        ).apply(np.ceil)
+        census_dict[k] = census[k]
+    census_df = pd.DataFrame(census_dict)
+    census_df["day"] = census_df.index
+    census_df = census_df[["day", "hosp", "icu", "vent"]]
+
+    census_table = census_df[np.mod(census_df.index, 7) == 0].copy()
+    census_table.index = range(census_table.shape[0])
+    census_table.loc[0, :] = 0
+    census_table = census_table.dropna().astype(int)
+    return data, proj_admits, census_table
 
 
+dtx, admits, census = chime(1345076, 35, 2, n_days = 140)
+
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('tkagg')
+
+plt.plot(list(range(5)))
+plt.show()
