@@ -96,16 +96,23 @@ class Penn_detect_prob(SIR):
         beta = ((self.intrinsic_growth + gamma) / S)  * (1-contact_reduction)
         self.r_t = beta/gamma * S
         self.r_naught = self.r_t / (1-contact_reduction)
-        super().__init__(S, I/detect_prob, R, beta, gamma, beta_decay)
+        self.I = I / detect_prob
+        super().__init__(S, self.I, R, beta, gamma, beta_decay)
 
-    def sir(self, n_days: int) -> dict:
+    def sir(self, n_days: int) -> (dict, dict):
         s, i, r = super().sir(n_days)
         out = {}
+        admissions = {}
         out['infected'] = i
         out['recovered'] = r
         out['susceptible'] = s
         for k in self.rates.keys():
+            # calculate raw numbers
             out[k] = i*self.rates[k]
-            out[k] = rolling_sum(out[k], self.los[k])
-        return out
+            # turn to new admissions per day
+            admissions[k] = out[k]
+            admissions[k] = admissions[k][1:] - admissions[k][:-1]
+            admissions[k][np.where(admissions[k] < 0)] = 0
+            admissions[k] = rolling_sum(admissions[k], self.los[k])
+        return out, admissions
 
