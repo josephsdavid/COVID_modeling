@@ -4,10 +4,12 @@
 *.json
 #result
 #data/
-
+# submodules = no
+caedus-covid/
 
 # tensorboard logs
 logs/
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
