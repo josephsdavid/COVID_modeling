@@ -2,12 +2,14 @@ import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('tkagg')
 plt.style.use('seaborn-paper')
-from comodels.sir import Penn_detect_prob, rolling_sum
+from comodels.sir import Penn
 
-print(Penn_detect_prob.__doc__)
+print(Penn.__doc__)
 
-tx = Penn_detect_prob(28304596, 223, 0, 1/8)
-tx_good = Penn_detect_prob(28304596, 223, 0, 1/8, contact_reduction = 0.33)
+print(Penn.sir.__doc__)
+
+tx = Penn(28304596, 223, 0, 1/8)
+tx_good = Penn(28304596, 223, 0, 1/8, contact_reduction = 0.33)
 
 fig, axs = plt.subplots(3,2)
 for k, v in tx.sir(180)[0].items():

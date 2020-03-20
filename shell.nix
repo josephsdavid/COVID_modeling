@@ -26,7 +26,8 @@ in
       pkgs.python37Packages.pandas
       pkgs.python37Packages.imbalanced-learn
       pkgs.qt5.qtbase
-
+      pkgs.python37Packages.wheel
+      pkgs.python37Packages.twine
     ];
     shellHook = ''
       export SOURCE_DATE_EPOCH=$(date +%s) 

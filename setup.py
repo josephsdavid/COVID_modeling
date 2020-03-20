@@ -6,7 +6,7 @@ def readme():
 
 setuptools.setup(
     name = "covid-modeling",
-    version = "0.0.1",
+    version = "0.0.3",
     description = "COVID-19 Modeling",
     long_description = readme(),
     long_description_content_type = "text/markdown",
@@ -23,5 +23,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    install_requires = [numpy]
+    install_requires = ['numpy']
 )
