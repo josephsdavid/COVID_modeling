@@ -6,7 +6,7 @@ from cotools import get_hopkins
 import pandas as pd
 from pprint import pprint
 from sklearn.linear_model import LinearRegression
-census = pd.read_csv("data/census.csv")
+census = pd.read_csv("census.csv")
 pops = census[['NAME', 'POPESTIMATE2019']]
 
 nms = pops['NAME']
@@ -27,7 +27,7 @@ conf, dead, rec = (pd.DataFrame.from_dict(get_state_level(x)).drop(['Lat','Long'
 
 
 # get the growth rate from the data
-def get_slope(X):
+def get_slope(X: pd.DataFrame) -> float:
     lm = LinearRegression()
     lm.fit(np.arange(X.shape[0]).reshape(-1,1), X.apply(lambda x: math.log(x) if x != 0 else x))
     return lm.coef_[0]
@@ -63,6 +63,17 @@ print(sum(state_growths) / len(state_growths) - growth_rate)
 state_growths = dict(zip(conf['Province/State'], state_growths))
 state_d_times = {k: doubling_time(v) for k, v in state_growths.items()}
 
+# something something something
 
-help()
+
+help(PennDeath)
+
+# TODO: make plotly code that does https://plot.ly/python/sliders/ but for our
+# output. Should be cake, maybe a massive loop of all the states, byt ezpz
+
+# we are going to assume D_today =  0 for now, for the sake of not embarassing
+# ourselves, as per Niels' suggestion. D_today is not actually like a crucial
+# paremeter, it is a tool for estimating where we are on the curve. Code is not
+# fully trustworthy yet involving that, so just set it to be zero and be naive
+# (MVP)
 
