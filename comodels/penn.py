@@ -59,7 +59,7 @@ class Penn(SIR):
         icu_rate: rate of infected who need to be in ICU = 0.02
         vent_rate: rate of infected who need ventilators = 0.01
         contact_reduction: percent contact reduced by social distancing = 0
-        t_double: time to double number of infected = 6.
+        t_double: time to double number of infected = 2.
         beta_decay: decay rate of beta, which represents how often a contact results in a new infection = 0
         vent_los: time one patient takes up a ventilator=10
         hos_los: time one patient takes up a normal hospital bed = 7
@@ -90,7 +90,7 @@ class Penn(SIR):
     def __init__(self, S: int, I: int, R: int, detect_prob: float = 1,
                  hosp_rate: float=0.05, icu_rate: float=0.02,
                  vent_rate: float=0.01, contact_reduction: float=0.,
-                 t_double: float=6, beta_decay: float=0, vent_los: float=10,
+                 t_double: float=2, beta_decay: float=0, vent_los: float=10,
                  hos_los: float=7, icu_los: float=9, recover_time: float=14) -> None:
         self.rates = {'hospital': hosp_rate,'icu': icu_rate, 'ventilator':vent_rate}
         self.los = dict(zip(self.rates.keys(), [hos_los, icu_los, vent_los]))
@@ -154,12 +154,12 @@ class PennDeath(SIRD):
         death_rate: rate of infected who die = 0.01
         contact_reduction: percent contact reduced by social distancing = 0
         t_death: time from infection to death = 20
-        t_double: time to double number of infected = 6.
+        t_double: time to double number of infected = 2.
         beta_decay: decay rate of beta, which represents how often a contact results in a new infection = 0
         vent_los: time one patient takes up a ventilator=10
         hos_los: time one patient takes up a normal hospital bed = 7
         icu_los: time one patient takes up an ICU bed = 9
-        recover_time: time to get better, to shift from I to R = 20
+        recover_time: time to get better, to shift from I to R = 23
         birth_rate: Daily rate of birth. Assumed to be 0, as babies are
         hopefully not susceptible
 

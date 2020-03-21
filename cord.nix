@@ -2,11 +2,11 @@
 
 buildPythonPackage rec {
     pname = "cord-19-tools";
-    version = "0.0.7";
+    version = "0.0.8";
 
     src = fetchPypi {
       inherit pname version;
-      sha256 = "aff320bd1e2df2b7a68d5d775a233991bb829ce10035cc085547f43ab3b545d3";
+      sha256 = "38b313dabd09ee42a16afcb763029b383bf7d2cabcdb82f820f5bf3eaa7762ee";
     };
     doCheck = false;
 }

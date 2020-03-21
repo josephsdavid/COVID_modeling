@@ -1,80 +1,68 @@
+import numpy as np
 import math
-from comodels import Penn
+from comodels import PennDeath
+from comodels.utils import states
 from cotools import get_hopkins
 import pandas as pd
-import numpy as np
-from states import states
+from pprint import pprint
 from sklearn.linear_model import LinearRegression
-
-r_naught = 2.2
-social_distancing = 0
-t_recovery = 20
-
-help(Penn)
-
 census = pd.read_csv("data/census.csv")
+pops = census[['NAME', 'POPESTIMATE2019']]
 
-covid_numbers = pd.read_csv("http://coronavirusapi.com/time_series.csv")
+nms = pops['NAME']
 
 
-covid_numbers
+conf['Province/State']
 
-def get_us(d: dict) -> dict:
-    idx = [i for i in range(len(d['Country/Region'])) if d['Country/Region'][i] == 'US']
+
+social_distancing = 0
+# I think this is fairly accurate
+t_recovery = 23
+
+# get the states out of the hopkins time series
+def get_state_level(d: dict) -> dict:
+    idx = [i for i in range(len(d['Province/State'])) if d['Province/State'][i] in states.values()]
     return {k:np.array(v)[idx] for k, v in d.items()}
+conf, dead, rec = (pd.DataFrame.from_dict(get_state_level(x)).drop(['Lat','Long','Country/Region'], axis=1) for x in get_hopkins())
 
 
-def get_state_unabbrev(x: str) -> str:
-    return states[x]
-
-def get_state(x:str) -> str:
-    return x[-2:].upper()
-
-
-
-def agg_by_state(d: dict) -> pd.DataFrame:
-    df = pd.DataFrame.from_dict(d)
-    df['Province/State'] = df['Province/State'].apply(get_state)
-    out = df.groupby('Province/State').sum().copy()
-    out = out.drop(['Lat', 'Long'], axis=1)
-    out['State'] = out.index
-    return out
-
-
-us_co , us_dead, us_rec= (agg_by_state(get_us(x)) for x in get_hopkins())
-
-np.arange(us_co.sum(0).shape[0])
-
-(us_co.sum(0).apply(math.log))
-
+# get the growth rate from the data
 def get_slope(X):
     lm = LinearRegression()
-    lm.fit(np.arange(X.shape[0]).reshape(-1,1), X.apply(math.log))
+    lm.fit(np.arange(X.shape[0]).reshape(-1,1), X.apply(lambda x: math.log(x) if x != 0 else x))
     return lm.coef_[0]
 
-get_slope(us_co.sum(0).drop('State'))
+# the zeros mess up our slope
+us = conf.sum(0).drop('Province/State').copy()
+us = us.loc[us!=0]
 
-out = []
-for i in range(us_co.shape[0]):
-    data = us_co.iloc[i,:].drop('State')
-    import pdb; pdb.set_trace()  # XXX BREAKPOINT
-    out += [get_slope(data)]
+# 2 = (1 + growth_rate)**t
+# log2(2) = log2(1+ growth_rate)**t
+# 1 = t*(log2(1+growth_rate))
+growth_rate = get_slope(us)
+t_double = 1/(np.log2(1+growth_rate))
+print(t_double)
 
-
-
-us_co.sum(0)
-
-deaths = us_dead.sum(1)
-
-us_dead.keys()
-
+# make it a function for later on
+def doubling_time(gr: float) -> float:
+    return 1/np.log2(1+gr)
 
 
-deaths_today = deaths - us_dead.iloc[:,:-13].sum(1)
+state_growths = []
+for i in range(conf.shape[0]):
+    data = conf.iloc[i,:].drop('Province/State')
+    data = data.loc[data!=0]
+    # balance the growth rate towards the aggregate growth rate, as suggested by
+    # Pat
+    state_growths += [(get_slope(data) + growth_rate)/2]
+
+# in general, things are similar to the aggregate rate, but a bit more
+# pessimistic
+print(sum(state_growths) / len(state_growths) - growth_rate)
+
+state_growths = dict(zip(conf['Province/State'], state_growths))
+state_d_times = {k: doubling_time(v) for k, v in state_growths.items()}
 
 
-deaths_today['TX']
-
-deaths_today['tx'.upper()]
-
+help()
 
