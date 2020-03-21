@@ -2,7 +2,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('tkagg')
 plt.style.use('seaborn-paper')
-from comodels.sir import PennDeath
+from comodels import PennDeath
 
 tx = PennDeath(330460832, 14250, 125, 205, 57, death_rate = 0.01, birth_rate=0, contact_reduction = 0.)
 

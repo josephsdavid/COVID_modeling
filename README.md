@@ -8,9 +8,8 @@ Much more to come. For help:
 ```python
 import comodels
 help(comodels)
-help(comodels.sir)
-help(comodels.sir.PennDeath)
-help(comodels.sir.Penn)
+help(comodels.PennDeath)
+help(comodels.Penn)
 ```
 
 ## Penn Death model
@@ -18,7 +17,7 @@ help(comodels.sir.Penn)
 ```python
 # import the penn model
 import matplotlib.pyplot as plt
-from comodels.sir import PennDeath
+from comodels import PennDeath
 
 help(PennDeath)
 tx = PennDeath(N = 28304596, I = 223, R = 0, D = 3, D_today = 2)

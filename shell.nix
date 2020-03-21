@@ -14,9 +14,11 @@ in
     buildInputs = [
       pkgs.python37
       cord19
+      pkgs.python37Packages.pymc3
       pkgs.python37Packages.numpy
       pkgs.python37Packages.dask
       pkgs.python37Packages.scikitlearn
+      pkgs.python37Packages.beautifulsoup4
       pkgs.python37Packages.xgboost
       pkgs.zip
       pkgs.python37Packages.scipy

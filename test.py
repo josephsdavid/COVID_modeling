@@ -2,7 +2,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 matplotlib.use('tkagg')
 plt.style.use('seaborn-paper')
-from comodels.sir import Penn
+from comodels import Penn
 
 print(Penn.__doc__)
 

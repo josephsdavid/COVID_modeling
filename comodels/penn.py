@@ -189,8 +189,8 @@ class PennDeath(SIRD):
                  hosp_rate: float=0.15, icu_rate: float=0.05,
                  vent_rate: float=0.02, death_rate: float=0.01,
                  contact_reduction: float=0., t_death: float=20,
-                 t_double: float=6, beta_decay: float=0, vent_los: float=10,
-                 hos_los: float=7, icu_los: float=9, recover_time: float=20,
+                 t_double: float=3.31, beta_decay: float=0, vent_los: float=10,
+                 hos_los: float=7, icu_los: float=9, recover_time: float=23,
                  birth_rate: float=0):
         self.rates = {'hospital': hosp_rate,'icu': icu_rate, 'ventilator':vent_rate}
         self.los = dict(zip(self.rates.keys(), [hos_los, icu_los, vent_los]))

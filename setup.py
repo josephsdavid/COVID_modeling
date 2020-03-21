@@ -6,11 +6,11 @@ def readme():
 
 setuptools.setup(
     name = "covid-modeling",
-    version = "0.0.3",
+    version = "0.1.0",
     description = "COVID-19 Modeling",
     long_description = readme(),
     long_description_content_type = "text/markdown",
-    url = "https://github.com/josephsdavid/COVID-modeling",
+    url = "https://github.com/josephsdavid/COVID_modeling",
     maintainer = "David Josephs",
     maintainer_email = "josephsd@smu.edu",
    #$ packages = setuptools.find_packages(exclude = [
