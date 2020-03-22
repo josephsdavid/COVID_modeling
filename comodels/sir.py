@@ -17,7 +17,7 @@ class SIR:
         self.r = [R]
 
     def _rectify(self, x: float) -> float:
-        out = 0 if x < 0 else x
+        out = 0 if x <= 0 else x
         return out
 
     def _Sn(self, S: int, I:int) -> float:

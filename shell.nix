@@ -15,6 +15,7 @@ in
       pkgs.python37
       cord19
       pkgs.python37Packages.pymc3
+      pkgs.python37Packages.plotly
       pkgs.python37Packages.numpy
       pkgs.python37Packages.dask
       pkgs.python37Packages.scikitlearn
