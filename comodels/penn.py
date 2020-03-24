@@ -1,5 +1,12 @@
+# Core Library modules
+from typing import Any, Dict, Tuple
+
+# Third party modules
 import numpy as np
+
+# Local modules
 from .sir import SIR, SIRD
+
 
 def calc_hosp_numbers(i: np.ndarray, rate: float) -> np.ndarray:
     """
@@ -11,7 +18,7 @@ def calc_hosp_numbers(i: np.ndarray, rate: float) -> np.ndarray:
         rate: float = rate of whatever
     Outputs: np.ndarray
     """
-    return i*rate
+    return i * rate
 
 
 def calc_admission_deltas(admits: np.ndarray) -> np.ndarray:
@@ -87,25 +94,38 @@ class Penn(SIR):
         sir(n_days):
             run simulation, see docstring for sir
     """
-    def __init__(self, S: int, I: int, R: int, detect_prob: float = 1,
-                 hosp_rate: float=0.05, icu_rate: float=0.02,
-                 vent_rate: float=0.01, contact_reduction: float=0.,
-                 t_double: float=2, beta_decay: float=0, vent_los: float=10,
-                 hos_los: float=7, icu_los: float=9, recover_time: float=14) -> None:
-        self.rates = {'hospital': hosp_rate,'icu': icu_rate, 'ventilator':vent_rate}
+
+    def __init__(
+        self,
+        S: int,
+        I: int,
+        R: int,
+        detect_prob: float = 1,
+        hosp_rate: float = 0.05,
+        icu_rate: float = 0.02,
+        vent_rate: float = 0.01,
+        contact_reduction: float = 0.0,
+        t_double: float = 2,
+        beta_decay: float = 0,
+        vent_los: float = 10,
+        hos_los: float = 7,
+        icu_los: float = 9,
+        recover_time: float = 14,
+    ) -> None:
+        self.rates = {"hospital": hosp_rate, "icu": icu_rate, "ventilator": vent_rate}
         self.los = dict(zip(self.rates.keys(), [hos_los, icu_los, vent_los]))
         self.contact_reduction = contact_reduction
         self.t_double = t_double
-        self.intrinsic_growth = 2**(1/t_double) - 1
+        self.intrinsic_growth = 2 ** (1 / t_double) - 1
         self.recover_time = recover_time
-        gamma = 1/self.recover_time
-        beta = ((self.intrinsic_growth + gamma) / S)  * (1-contact_reduction)
-        self.r_t = beta/gamma * S
-        self.r_naught = self.r_t / (1-contact_reduction)
+        gamma = 1 / self.recover_time
+        beta = ((self.intrinsic_growth + gamma) / S) * (1 - contact_reduction)
+        self.r_t = beta / gamma * S
+        self.r_naught = self.r_t / (1 - contact_reduction)
         self.I = I / detect_prob
         super().__init__(S, self.I, R, beta, gamma, beta_decay)
 
-    def sir(self, n_days: int) -> (dict, dict):
+    def sir(self, n_days: int) -> Tuple[Dict[Any, Any], Dict[Any, Any]]:
         """
         sir: fit SIR model to the data
         -----------------------------------
@@ -124,9 +144,9 @@ class Penn(SIR):
         s, i, r = super().sir(n_days)
         out = {}
         admissions = {}
-        out['infected'] = i
-        out['recovered'] = r
-        out['susceptible'] = s
+        out["infected"] = i
+        out["recovered"] = r
+        out["susceptible"] = s
         for k in self.rates.keys():
             # calculate raw numbers
             out[k] = calc_hosp_numbers(i, self.rates[k])
@@ -185,38 +205,65 @@ class PennDeath(SIRD):
         sir(n_days):
             run simulation, see docstring for sir
     """
-    def __init__(self, N: int, I: int, R: int, D: int, D_today: int,
-                 hosp_rate: float=0.15, icu_rate: float=0.05,
-                 vent_rate: float=0.02, death_rate: float=0.01,
-                 contact_reduction: float=0., t_death: float=20,
-                 t_double: float=3.31, beta_decay: float=0, vent_los: float=10,
-                 hos_los: float=7, icu_los: float=9, recover_time: float=23,
-                 birth_rate: float=0):
-        self.rates = {'hospital': hosp_rate,'icu': icu_rate, 'ventilator':vent_rate}
+
+    def __init__(
+        self,
+        N: int,
+        I: int,
+        R: int,
+        D: int,
+        D_today: int,
+        hosp_rate: float = 0.15,
+        icu_rate: float = 0.05,
+        vent_rate: float = 0.02,
+        death_rate: float = 0.01,
+        contact_reduction: float = 0.0,
+        t_death: float = 20,
+        t_double: float = 3.31,
+        beta_decay: float = 0,
+        vent_los: float = 10,
+        hos_los: float = 7,
+        icu_los: float = 9,
+        recover_time: float = 23,
+        birth_rate: float = 0,
+    ):
+        self.rates = {"hospital": hosp_rate, "icu": icu_rate, "ventilator": vent_rate}
         self.los = dict(zip(self.rates.keys(), [hos_los, icu_los, vent_los]))
         self.contact_reduction = contact_reduction
         self.t_double = t_double
-        self.intrinsic_growth = 2**(1/t_double) - 1
+        self.intrinsic_growth = 2 ** (1 / t_double) - 1
         self.recover_time = recover_time
         S = N - (I + R + D)
-        gamma = 1/self.recover_time
-        beta = ((self.intrinsic_growth + gamma) / S)  * (1-contact_reduction)
-        self.r_t = beta/gamma * S
-        self.r_naught = self.r_t / (1-contact_reduction)
+        gamma = 1 / self.recover_time
+        beta = ((self.intrinsic_growth + gamma) / S) * (1 - contact_reduction)
+        self.r_t = beta / gamma * S
+        self.r_naught = self.r_t / (1 - contact_reduction)
         if D_today == 0:
             self.I = I
         else:
-            infect_t_death = D_today/death_rate
-            penn = Penn(S, I, R, 1,
-                 hosp_rate, icu_rate ,
-                 vent_rate , contact_reduction,
-                 t_double, beta_decay, vent_los,
-                 hos_los, icu_los, recover_time)
-            self.I = penn.sir(t_death)[0]['infected'][-1]
-        super().__init__(N, self.I, R, D,beta, gamma, death_rate, birth_rate, beta_decay)
+            infect_t_death = D_today / death_rate
+            penn = Penn(
+                S,
+                I,
+                R,
+                1,
+                hosp_rate,
+                icu_rate,
+                vent_rate,
+                contact_reduction,
+                t_double,
+                beta_decay,
+                vent_los,
+                hos_los,
+                icu_los,
+                recover_time,
+            )
+            self.I = penn.sir(t_death)[0]["infected"][-1]
+        super().__init__(
+            N, self.I, R, D, beta, gamma, death_rate, birth_rate, beta_decay
+        )
 
-
-    def sir(self, n_days: int) -> (dict, dict):
+    def sir(self, n_days: int) -> Tuple[Dict, Dict]:
         """
         sir: fit SIR model to the data
         -----------------------------------
@@ -239,10 +286,10 @@ class PennDeath(SIRD):
         s, i, r, d = super().sir(n_days)
         out = {}
         admissions = {}
-        out['infected'] = i
-        out['recovered'] = r
-        out['susceptible'] = s
-        out['dead'] = d
+        out["infected"] = i
+        out["recovered"] = r
+        out["susceptible"] = s
+        out["dead"] = d
         for k in self.rates.keys():
             # calculate raw numbers
             out[k] = calc_hosp_numbers(i, self.rates[k])
@@ -251,4 +298,3 @@ class PennDeath(SIRD):
             admissions[k] = calc_admission_deltas(admissions[k])
             admissions[k] = rolling_sum(admissions[k], self.los[k])
         return out, admissions
-
