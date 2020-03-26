@@ -33,7 +33,7 @@ in
       pkgs.python37Packages.twine
     ];
     shellHook = ''
-      export SOURCE_DATE_EPOCH=$(date +%s) 
+      export SOURCE_DATE_EPOCH=$(date +%s)
     '';
 
   }

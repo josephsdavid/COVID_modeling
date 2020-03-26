@@ -127,3 +127,5 @@ tmux.conf
 
 data/*
 !data/*.sh
+
+tests/reports/
