@@ -14,7 +14,9 @@ in
     buildInputs = [
       pkgs.python37
       cord19
+      pkgs.gitAndTools.pre-commit
       pkgs.python37Packages.pymc3
+      pkgs.python37Packages.black
       pkgs.python37Packages.plotly
       pkgs.python37Packages.numpy
       pkgs.python37Packages.dask

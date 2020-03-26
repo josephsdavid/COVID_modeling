@@ -2,6 +2,8 @@
 *.mp4
 *.gif
 *.json
+plots/*
+fig/*
 #result
 #data/
 # submodules = no

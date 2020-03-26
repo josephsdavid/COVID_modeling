@@ -1,5 +1,8 @@
-from comodels import penn
+# Third party modules
 import numpy as np
+
+# First party modules
+from comodels import penn
 
 
 def test_rolling_sum():
