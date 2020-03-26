@@ -1,5 +1,5 @@
 # COMODELS
-
+[![PyPI version](https://badge.fury.io/py/covid-modeling.svg)](https://badge.fury.io/py/covid-modeling)
 Models for COVID - 19
 
 For documentation, see the docstrings!
